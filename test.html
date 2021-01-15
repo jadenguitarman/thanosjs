@@ -32,15 +32,15 @@
 		</div>
 
 		<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/jadenguitarman/thanosjs@1.1.0/thanos.min.js"></script>
-
+		<script src="https://cdn.jsdelivr.net/gh/jadenguitarman/thanosjs@1.2.0/thanos.min.js"></script>
 		<script>
 			let button = document.getElementById("button");
-			let thanos = new Thanos(
-				document.getElementById("button"),
-				{ x: 200, y: -200 },
-				document.getElementById("container")
-			);
+			let thanos = new Thanos({
+				victim: document.getElementById("button"),
+				move_to: { x: 200, y: -200 },
+				container: document.getElementById("container"),
+				pixel_size: 8
+			});
 			button.addEventListener("click", thanos.snap);
 		</script>
 	</body>

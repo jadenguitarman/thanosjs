@@ -1,4 +1,9 @@
-const Thanos = function (victim, moveTo = { x: 100, y: -100 }, canvas_container = document.body) {
+const Thanos = function ({
+	victim,
+	move_to = { x: 100, y: -100 },
+	container = document.body,
+	pixel_size = 4
+}) {
 	let imageDataArray = [];
 	const canvasCount = 35;
 
@@ -67,15 +72,11 @@ const Thanos = function (victim, moveTo = { x: 100, y: -100 }, canvas_container 
 		}
 
 		//put pixel info to imageDataArray (Weighted Distributed)
-		for (let i = 0; i < pixelArr.length; i += 4) {
+		for (let i = 0; i < pixelArr.length; i += pixel_size) {
 			//find the highest probability canvas the pixel should be in
 			let p = Math.floor((i / pixelArr.length) * canvasCount);
 			let a = imageDataArray[weightedRandomDistrib(p)];
-
-			a[i] = pixelArr[i];
-			a[i + 1] = pixelArr[i + 1];
-			a[i + 2] = pixelArr[i + 2];
-			a[i + 3] = pixelArr[i + 3];
+			for (let j = 0; j < pixel_size; j++) a[i + j] = pixelArr[i + j];
 		}
 
 		//create canvas for each imageData and append to target element
@@ -87,7 +88,7 @@ const Thanos = function (victim, moveTo = { x: 100, y: -100 }, canvas_container 
 			tempCtx.putImageData(new ImageData(imageDataArray[i], canvas.width, canvas.height), 0, 0);
 			new_canvas.classList.add("dust");
 			new_canvas.style.position = "absolute";
-			canvas_container.appendChild(new_canvas);
+			container.appendChild(new_canvas);
 		}
 
 		victim.parentNode.removeChild(victim);
@@ -114,7 +115,7 @@ const Thanos = function (victim, moveTo = { x: 100, y: -100 }, canvas_container 
 					if (timeFraction > 1) timeFraction = 1;
 					let progress = (1 - Math.sin(Math.acos(timeFraction)));
 					element.style.opacity = (1 - progress).toString();
-					element.style.transform = `rotate(${degree_end * progress}deg) translate(${moveTo.x * progress}px, ${moveTo.y * progress}px)`;
+					element.style.transform = `rotate(${degree_end * progress}deg) translate(${move_to.x * progress}px, ${move_to.y * progress}px)`;
 					if (timeFraction < 1) requestAnimationFrame(animate);
 				};
 				requestAnimationFrame(animate);
