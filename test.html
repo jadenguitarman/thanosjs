@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			body {
+				margin: 0;
+				height: 100vh;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				flex-direction: column;
+				background: #ddd;
+			}
+
+			#button {
+				font-size: 36px;
+				padding: 20px;
+			}
+		</style>
+
+		<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+		<script src="http://chancejs.com/chance.min.js"></script>
+		<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+	</head>
+	<body>
+		<div id="container">
+			<button id="button">Snap!</button>
+		</div>
+
+		
+
+		<script src="thanos.js"></script>
+
+		<script>
+			let button = document.getElementById("button");
+			let thanos = new Thanos(document.getElementById("container"), { x: 200, y: -200 });
+			button.addEventListener("click", thanos.snap);
+		</script>
+	</body>
+</html>
