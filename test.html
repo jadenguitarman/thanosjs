@@ -12,9 +12,17 @@
 				background: #ddd;
 			}
 
+			#container {
+				position: relative;
+				width: 200px;
+				height: 100px;
+			}
+
 			#button {
 				font-size: 36px;
 				padding: 20px;
+				width: 100%;
+				height: 100%;
 			}
 		</style>
 	</head>
@@ -24,11 +32,15 @@
 		</div>
 
 		<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/jadenguitarman/thanosjs@1.0.0/thanos.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/jadenguitarman/thanosjs@1.1.0/thanos.min.js"></script>
 
 		<script>
 			let button = document.getElementById("button");
-			let thanos = new Thanos(document.getElementById("container"), { x: 200, y: -200 });
+			let thanos = new Thanos(
+				document.getElementById("button"),
+				{ x: 200, y: -200 },
+				document.getElementById("container")
+			);
 			button.addEventListener("click", thanos.snap);
 		</script>
 	</body>

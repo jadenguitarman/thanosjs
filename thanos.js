@@ -1,4 +1,4 @@
-const Thanos = function (container, moveTo = { x: 100, y: -100 }) {
+const Thanos = function (victim, moveTo = { x: 100, y: -100 }, canvas_container = document.body) {
 	let imageDataArray = [];
 	const canvasCount = 35;
 
@@ -51,7 +51,7 @@ const Thanos = function (container, moveTo = { x: 100, y: -100 }) {
 	};
 
 	this.snap = async () => {
-		let canvas = await html2canvas(container);
+		let canvas = await html2canvas(victim);
 
 		//capture all div data as image
 		ctx = canvas.getContext("2d");
@@ -87,10 +87,10 @@ const Thanos = function (container, moveTo = { x: 100, y: -100 }) {
 			tempCtx.putImageData(new ImageData(imageDataArray[i], canvas.width, canvas.height), 0, 0);
 			new_canvas.classList.add("dust");
 			new_canvas.style.position = "absolute";
-			document.body.appendChild(new_canvas);
+			canvas_container.appendChild(new_canvas);
 		}
 
-		container.parentNode.removeChild(container);
+		victim.parentNode.removeChild(victim);
 
 		//apply animation
 		[...document.getElementsByClassName("dust")].forEach((element, index) => {
