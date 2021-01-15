@@ -2,13 +2,61 @@ const Thanos = function (container, moveTo = { x: 100, y: -100 }) {
 	let imageDataArray = [];
 	const canvasCount = 35;
 
+	const weightedRandomDistrib = peak => {
+		let prob = [];
+		let seq = [];
+		for (let i = 0; i < canvasCount; i++) {
+			prob.push(Math.pow(canvasCount - Math.abs(peak - i), 3));
+			seq.push(i);
+		}
+
+		// scan weights array and sum valid entries
+        let sum = 0;
+        let val;
+        for (let weightIndex = 0; weightIndex < prob.length; ++weightIndex) {
+            val = prob[weightIndex];
+            if (val > 0) sum += val;
+        }
+
+        // select a value within range
+        let selected = Math.random() * sum;
+
+        // find array entry corresponding to selected value
+        let total = 0;
+        let lastGoodIdx = -1;
+        let chosenIdx;
+        for (weightIndex = 0; weightIndex < prob.length; ++weightIndex) {
+            val = prob[weightIndex];
+            total += val;
+            if (val > 0) {
+                if (selected <= total) {
+                    chosenIdx = weightIndex;
+                    break;
+                }
+                lastGoodIdx = weightIndex;
+            }
+
+            // handle any possible rounding error comparison to ensure something is picked
+            if (weightIndex === (prob.length - 1)) chosenIdx = lastGoodIdx;
+        }
+
+        let chosen = seq[chosenIdx];
+        trim = (typeof trim === 'undefined') ? false : trim;
+        if (trim) {
+            seq.splice(chosenIdx, 1);
+            prob.splice(chosenIdx, 1);
+        }
+
+		return chosen;
+	};
+
 	this.snap = async () => {
 		let canvas = await html2canvas(container);
 
 		//capture all div data as image
 		ctx = canvas.getContext("2d");
-		var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-		var pixelArr = imageData.data;
+		let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		let pixelArr = imageData.data;
 
 		for (let i = 0; i < canvasCount; i++) {
 			let arr = new Uint8ClampedArray(imageData.data);
@@ -22,15 +70,7 @@ const Thanos = function (container, moveTo = { x: 100, y: -100 }) {
 		for (let i = 0; i < pixelArr.length; i += 4) {
 			//find the highest probability canvas the pixel should be in
 			let p = Math.floor((i / pixelArr.length) * canvasCount);
-
-			let seq = [];
-			for (let i = 0; i < canvasCount; i++) {
-				const prob = Math.pow(canvasCount - Math.abs(p - i), 3);
-				for (let j = 0; j < prob; j++) {
-					seq.push(i);
-				}
-			}
-			let a = imageDataArray[seq[Math.floor(seq.length * Math.random())]];
+			let a = imageDataArray[weightedRandomDistrib(p)];
 
 			a[i] = pixelArr[i];
 			a[i + 1] = pixelArr[i + 1];
